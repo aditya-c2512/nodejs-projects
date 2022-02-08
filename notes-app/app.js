@@ -1,8 +1,10 @@
 const chalk = require('chalk')
 const yargs = require('yargs')
-const getNotes = require('./notes.js')
+const notes = require('./notes.js')
 
 const processMsg = chalk.white.bgGreen.bold
+const successMsg = chalk.black.bgGreen.bold
+const failureMsg = chalk.white.bgRed.bold
 
 // add, remove, read, list
 yargs.command
@@ -27,8 +29,14 @@ yargs.command
         },
         handler : function(argv)
         {
-            console.log(processMsg('Adding Note : '), chalk.bold(argv.title))
-            console.log(chalk.italic(argv.body))
+            if(notes.addNote(argv.title, argv.body))
+            {
+                console.log(successMsg('New Note Added'))
+            }
+            else
+            {
+                console.log(failureMsg('Note with same title exists'))
+            }
         }
     }
 )
@@ -37,9 +45,25 @@ yargs.command
     {
         command : 'remove',
         describe : 'Remove a note',
-        handler : function()
+        builder :
         {
-            console.log(processMsg('Removing Note'))
+            title :
+            {
+                describe : 'Note Title',
+                demandOption : true,
+                type : 'string'
+            }
+        },
+        handler : function(argv)
+        {
+            if(notes.removeNote(argv.title))
+            {
+                console.log(successMsg('Note with title ' + argv.title + ' Removed!'))
+            }
+            else
+            {
+                console.log(failureMsg('No such note exists'))
+            }
         }
     }
 )
