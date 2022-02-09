@@ -27,7 +27,7 @@ yargs.command
                 type : 'string'
             }
         },
-        handler : function(argv)
+        handler(argv)
         {
             if(notes.addNote(argv.title, argv.body))
             {
@@ -54,7 +54,7 @@ yargs.command
                 type : 'string'
             }
         },
-        handler : function(argv)
+        handler(argv)
         {
             if(notes.removeNote(argv.title))
             {
@@ -72,9 +72,21 @@ yargs.command
     {
         command : 'read',
         describe : 'Read a note',
-        handler : function()
+        builder :
         {
-            console.log(processMsg('Reading Note'))
+            title :
+            {
+                describe : 'Note Title',
+                demandOption : true,
+                type : 'string'
+            }
+        },
+        handler(argv)
+        {
+            if(!notes.readNote(argv.title))
+            {
+                console.log(failureMsg('No such note exists'))
+            }
         }
     }
 )
@@ -83,9 +95,10 @@ yargs.command
     {
         command : 'list',
         describe : 'List all notes',
-        handler : function()
+        handler()
         {
-            console.log(processMsg('List of Notes'))
+            console.log(chalk.white.bold.inverse('YOUR NOTES : '))
+            notes.listNotes()
         }
     }
 )

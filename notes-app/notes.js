@@ -1,6 +1,7 @@
 const fs = require('fs')
+const chalk = require('chalk')
 
-const loadNotes = function()
+const loadNotes = () =>
 {
     try
     {
@@ -11,25 +12,17 @@ const loadNotes = function()
         return []
     }
 }
-const saveNotes = function(notes)
+const saveNotes = (notes) =>
 {
     fs.writeFileSync('notes.json',JSON.stringify(notes))
 }
-const getNotes = function () 
-{
-    return 'Your notes...'
-}
-const addNote = function(title, body)
+
+const addNote = (title, body) =>
 {
     const notes = loadNotes()
-    const duplicates = notes.filter(
-        function(note)
-        {
-            return note.title === title
-        }
-    )
+    const duplicate = notes.find((note) => note.title === title)
 
-    if(duplicates.length === 0)
+    if(!duplicate)
     {
         notes.push(
             {
@@ -45,15 +38,10 @@ const addNote = function(title, body)
         return false
     }
 }
-const removeNote = function(title)
+const removeNote = (title) =>
 {
     const notes = loadNotes()
-    const filtered = notes.filter(
-        function(note)
-        {
-            return note.title !== title
-        }
-    )
+    const filtered = notes.filter((note) => note.title !== title)
     if(notes.length > filtered.length)
     {
         saveNotes(filtered)
@@ -64,9 +52,33 @@ const removeNote = function(title)
         return false
     }
 }
-
+const readNote = (title) =>
+{
+    const notes = loadNotes()
+    const noteToRead = notes.find((note) => note.title === title)
+    if(noteToRead)
+    {
+        console.log(chalk.bold.white.inverse(noteToRead.title))
+        console.log(noteToRead.body)
+        return true
+    }
+    else
+    {
+        return false
+    }
+}
+const listNotes = () =>
+{
+    const notes = loadNotes()
+    notes.forEach((note) =>
+        {
+            console.log(note.title)
+        }
+    )
+}
 module.exports = {
-    getNotes : getNotes,
     addNote : addNote,
-    removeNote : removeNote
+    removeNote : removeNote,
+    readNote : readNote,
+    listNotes : listNotes
 }
