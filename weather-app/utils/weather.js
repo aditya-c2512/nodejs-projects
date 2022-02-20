@@ -1,6 +1,6 @@
 const request = require('request')
 
-const forecast = (lat, long, callback) =>
+const forecast = ({lat, long}, callback) =>
 {
     const url = `http://api.weatherstack.com/current?access_key=7cb8971f2d66b4ebf6f29b137d24d442&query=${encodeURIComponent(lat)},${encodeURIComponent(long)}&units=m`
 
@@ -9,13 +9,13 @@ const forecast = (lat, long, callback) =>
             url : url,
             json : true
         },
-        (error, response) =>
+        (error, {body}) =>
         {
             if(error)
             {
                 callback('CAN NOT ACCESS WEATHERSTACK API', undefined)
             }
-            else if(response.body.error)
+            else if(body.error)
             {
                 callback('UNABLE TO FIND LOCATION', undefined)
             }
@@ -23,7 +23,7 @@ const forecast = (lat, long, callback) =>
             {
                 callback(
                     undefined,
-                    'It is currently ' + response.body.current.temperature + ' degrees celsius out. There is ' + response.body.current.humidity + '% humidity.'
+                    'It is currently ' + body.current.temperature + ' degrees celsius out. There is ' + body.current.humidity + '% humidity.'
                 )
             }
         }

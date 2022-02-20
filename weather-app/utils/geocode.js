@@ -8,13 +8,13 @@ const geocode = (address, callback) =>
             url : url,
             json : true
         },
-        (error, response) =>
+        (error, {body}) =>
         {
             if(error)
             {
                 callback('CAN NOT ACCESS MAPBOX API', undefined)
             }
-            else if(response.body.features.length === 0)
+            else if(body.features.length === 0)
             {
                 callback('LOCATION NOT FOUND', undefined)
             }
@@ -23,9 +23,9 @@ const geocode = (address, callback) =>
                 callback(
                     undefined,
                     {
-                        lat : response.body.features[0].center[1],
-                        long : response.body.features[0].center[0],
-                        name : response.body.features[0].place_name
+                        lat : body.features[0].center[1],
+                        long : body.features[0].center[0],
+                        name : body.features[0].place_name
                     }
                 )
             }

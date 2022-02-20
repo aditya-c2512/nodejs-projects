@@ -11,35 +11,41 @@ const processMsg = chalk.white.inverse
 const errorMsg = chalk.red.inverse
 const errorDesc = chalk.red
 
-const location = 'Washington DC'
-
-geocode(
-    location, 
-    (error, data) =>
-    {
-        if(error)
+const location = process.argv[2]
+if(location)
+{
+    geocode(
+        location, 
+        (error, geocodeData) =>
         {
-            console.log(errorDesc(error))
-        }
-        else
-        {
-            console.log(successMsg(data.name))
-            console.log(successMsg('LATITUDE : ' + data.lat + ' LONGITUDE : ' + data.long))
-            forecast(
-                data.lat, data.long,
-                (error, data) =>
-                {
-                    if(error)
+            if(error)
+            {
+                console.log(errorDesc(error))
+            }
+            else
+            {
+                console.log(successMsg(geocodeData.name))
+                console.log(successMsg('LATITUDE : ' + geocodeData.lat + ' LONGITUDE : ' + geocodeData.long))
+                forecast(
+                    geocodeData,
+                    (error, forecastData) =>
                     {
-                        console.log(errorDesc(error))
+                        if(error)
+                        {
+                            console.log(errorDesc(error))
+                        }
+                        else
+                        {
+                            console.log(processMsg(forecastData))
+                        }
                     }
-                    else
-                    {
-                        console.log(processMsg(data))
-                    }
-                }
-            )
+                )
+            }
         }
-    }
-)
+    )
+}
+else
+{
+    console.log(errorMsg('Please Provide a Valid Location'))
+}
 
