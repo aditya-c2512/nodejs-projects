@@ -3,6 +3,9 @@ const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
 
+const geocode = require('./utils/geocode.js')
+const forecast = require('./utils/weather.js')
+
 const app = express()
 
 // Paths for Express Config
@@ -71,9 +74,61 @@ app.get(
     '/weather',
     (req, res) =>
     {
-        res.send('Weather!')
+        if(!req.query.address)
+        {
+            return res.send(
+                {
+                    error : 'Please provide a location'
+                }
+            )
+        }
+
+        geocode(
+            req.query.address, 
+            (error, geocodeData) =>
+            {
+                if(error)
+                {
+                    return res.send({ error })
+                }
+                else
+                {
+                    forecast(
+                        geocodeData,
+                        (error, forecastData) =>
+                        {
+                            if(error)
+                            {
+                                return res.send({ error })
+                            }
+                            else
+                            {
+                                return res.send(
+                                    {
+                                        location : geocodeData.name,
+                                        forecast : forecastData
+                                    }
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+        )
     }
 )
+app.get(
+    '/products',
+    (req, res) =>
+    {
+        res.send(
+            {
+                products : []
+            }
+        )
+    }
+)
+
 app.get(
     '*',
     (req, res) =>
