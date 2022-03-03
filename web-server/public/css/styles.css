@@ -7,6 +7,8 @@ body
     padding: 0 16px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
 }
 header
@@ -35,6 +37,8 @@ header a
 }
 footer
 {
+    width: 100vw;
+    text-align: center;
     color: #888888;
     border-top: 2px solid #eeeeee;
     margin-top: 16px;
